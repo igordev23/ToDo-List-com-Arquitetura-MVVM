@@ -1,33 +1,40 @@
 import { useState } from "react";
-import { MyPhoto } from "../model/entities/Task";
+import { Task } from "../model/entities/Task";
+import { taskRepository } from "../model/repositories/taskRepository";
 
 // Definição dos tipos para State e Actions
-export type PhotoDetailState = {
-    photo: MyPhoto | null;
+export type CreateTaskState = {
+    task: Task;
+    loading: boolean;
 };
 
-export type PhotoDetailActions = {
-    updatePhoto: (newPhoto: MyPhoto) => void;
+export type CreateTaskActions = {
+    createTask: (task: Task) => void;
 };
 
-export const usePhotoDetailViewModel = (
-    initialPhoto: MyPhoto | null
-): { state: PhotoDetailState; actions: PhotoDetailActions } => {
+export const useCreateTaskViewModel = (
+    initialTask: Task
+): { state: CreateTaskState; actions: CreateTaskActions } => {
     // Estado
-    const [photo, setPhoto] = useState<MyPhoto | null>(initialPhoto);
+    const [task, setTask] = useState<Task>(initialTask);
+    const [loading, setLoading] = useState<boolean>(false);
 
-    // Ação para atualizar a foto
-    const updatePhoto = (newPhoto: MyPhoto) => {
-        setPhoto(newPhoto);
+
+    const createTask = (newTask: Task) => {
+        setLoading(true);
+        taskRepository.add(newTask);
+        setTask(newTask);
+        setLoading(false);
     };
 
     // Retorno no formato MVVM
     return {
         state: {
-            photo,
+            task,
+            loading,
         },
         actions: {
-            updatePhoto,
+            createTask,
         },
     };
 };
