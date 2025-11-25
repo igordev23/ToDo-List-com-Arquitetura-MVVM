@@ -3,6 +3,4 @@ export interface Task {
     titulo: string;
     decricao: string | null;
     timeStamp: number | null;
-
-
 }
