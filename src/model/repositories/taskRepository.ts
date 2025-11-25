@@ -7,6 +7,7 @@ class TaskRepositoryImpl implements TaskRepository {
     getAll(): Task[] {
         return this.tasks;
     }
+    
 
     getByIndex(index: number): Task | null {
         return this.tasks[index] || null;
