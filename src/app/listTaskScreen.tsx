@@ -2,9 +2,18 @@ import { useRouter } from "expo-router";
 import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
 import { Pressable } from "@/components/ui/pressable";
+import { useListTaskViewModel } from "../viewmodel/useListTaskViewModel";
+import { useEffect } from "react";
 
 export default function ListTaskScreen() {
   const router = useRouter();
+  const { state, actions } = useListTaskViewModel();
+  const { tasks, loading } = state;
+  const { loadTasks } = actions;
+
+  useEffect(() => {
+    loadTasks();
+  }, []);
 
   return (
     <Box className="flex-1 bg-white">
@@ -15,22 +24,24 @@ export default function ListTaskScreen() {
 
       {/* Lista de Tarefas */}
       <Box className="flex-1 p-4">
-        {/* Exemplo de tarefa com redirecionamento para detalhes */}
-        <Pressable
-          onPress={() => router.push("./detailTaskScreen")}
-          className="mb-4 p-4 bg-gray-100 rounded-lg shadow"
-        >
-          <Text className="text-black font-medium">Tarefa 1</Text>
-          <Text className="text-gray-600 text-sm">Descrição da tarefa 1</Text>
-        </Pressable>
+        {loading ? (
+          <Text className="text-center text-gray-500">Carregando...</Text>
+        ) : (
+          tasks.map((task, index) => (
+            <Pressable
+              key={index}
+              onPress={() => router.push(`./detailTaskScreen?index=${index}`)}
+              className="mb-4 p-4 bg-gray-100 rounded-lg shadow"
+            >
+              <Text className="text-black font-medium">{task.titulo}</Text>
+              <Text className="text-gray-600 text-sm">{task.decricao}</Text>
+              <Text className="text-gray-600 text-sm">
+               TimeStamp: {new Date(task.timeStamp ?? 0).toLocaleString()}
 
-        <Pressable
-          onPress={() => router.replace("./detailTaskScreen")}
-          className="mb-4 p-4 bg-gray-100 rounded-lg shadow"
-        >
-          <Text className="text-black font-medium">Tarefa 2</Text>
-          <Text className="text-gray-600 text-sm">Descrição da tarefa 2</Text>
-        </Pressable>
+              </Text>
+            </Pressable>
+          ))
+        )}
 
         {/* Botão para criar nova tarefa */}
         <Pressable

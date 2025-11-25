@@ -2,19 +2,19 @@ import { useState } from "react";
 import { Task } from "../model/entities/Task";
 import { taskRepository } from "../model/repositories/taskRepository";
 
-type ListTaskState = {
+export type ListTaskState = {
     loading: boolean;
     tasks: Task[];
 };
 
-type ListTaskActions = {
+export type ListTaskActions = {
     loadTasks: () => void;
     addTask: (task: Task) => void;
     deleteTask: (index: number) => void;
     updateTask: (index: number, task: Task) => void;
 };
 
-export function useListTaskViewModel(): ListTaskState & ListTaskActions {
+export function useListTaskViewModel(): { state: ListTaskState; actions: ListTaskActions } {
     const [loading, setLoading] = useState(false);
     const [tasks, setTasks] = useState<Task[]>([]);
 
@@ -41,14 +41,15 @@ export function useListTaskViewModel(): ListTaskState & ListTaskActions {
     };
 
     return {
-        // STATE
-        loading,
-        tasks,
-
-        // ACTIONS
-        loadTasks,
-        addTask,
-        deleteTask,
-        updateTask,
+        state: {
+            loading,
+            tasks,
+        },
+        actions: {
+            loadTasks,
+            addTask,
+            deleteTask,
+            updateTask,
+        },
     };
 }
