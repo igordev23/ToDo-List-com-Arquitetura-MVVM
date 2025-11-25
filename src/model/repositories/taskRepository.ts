@@ -7,7 +7,7 @@ class TaskRepositoryImpl implements TaskRepository {
     getAll(): Task[] {
         return this.tasks;
     }
-    
+
 
     getByIndex(index: number): Task | null {
         return this.tasks[index] || null;
@@ -23,7 +23,7 @@ class TaskRepositoryImpl implements TaskRepository {
         }
     }
 
-    remove(index: number): void {
+    delete(index: number): void {
         if (index >= 0 && index < this.tasks.length) {
             this.tasks = this.tasks.filter((_, i) => i !== index);
         }
