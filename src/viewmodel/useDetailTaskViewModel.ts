@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { photoRepository } from "../model/repositories/PhotoRepository";
-import { MyPhoto } from "../model/entities/MyPhoto";
+import { photoRepository } from "../model/repositories/taskRepository";
+import { MyPhoto } from "../model/entities/Task";
 
 // Definição dos tipos para State e Actions
 export type UserGaleryState = {

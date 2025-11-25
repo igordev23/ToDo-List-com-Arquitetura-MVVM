@@ -1,8 +1,8 @@
 import { CameraType, useCameraPermissions, CameraView } from "expo-camera";
 import * as Location from "expo-location";
 import { useState, useRef } from "react";
-import { MyPhoto } from "../model/entities/MyPhoto";
-import { photoRepository } from "../model/repositories/PhotoRepository";
+import { MyPhoto } from "../model/entities/Task";
+import { photoRepository } from "../model/repositories/taskRepository";
 
 type IndexState = {
     facing: CameraType;

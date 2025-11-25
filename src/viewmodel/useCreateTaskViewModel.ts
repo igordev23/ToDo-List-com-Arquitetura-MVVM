@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MyPhoto } from "../model/entities/MyPhoto";
+import { MyPhoto } from "../model/entities/Task";
 
 // Definição dos tipos para State e Actions
 export type PhotoDetailState = {

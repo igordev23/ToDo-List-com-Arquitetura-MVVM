@@ -1,4 +1,4 @@
-import { MyPhoto } from "../entities/MyPhoto";
+import { MyPhoto } from "../entities/Task";
 
 class PhotoRepository {
     private photos: MyPhoto[] = [];
