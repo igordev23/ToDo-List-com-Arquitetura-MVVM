@@ -140,18 +140,23 @@ Criar theme.ts para cores, fontes e espaçamentos.
 
 
 
-## 🧪 7. Testabilidade
+## 🧪 6. Testabilidade e Testes Automatizados
 
-- Testar apenas a lógica de negócio.
-
+Testar apenas a lógica de negócio.
 
 Services devem ser testáveis sem depender da UI.
 
-
 ViewModels devem ser independentes de React sempre que possível.
 
-
 Não usar elementos visuais na ViewModel.
+
+Implementação de testes automatizados obrigatória:
+
+Testes unitários da camada de lógica de negócio (ex.: ViewModel).
+
+Testes das funções relacionadas ao CRUD de tarefas.
+
+Testes de serviços via interfaces (DI) para facilitar mocks.
 
 
 
