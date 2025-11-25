@@ -1,24 +1,24 @@
-import { useState, useRef } from "react";
-import { task } from "../model/entities/Task";
+import { useState } from "react";
+import { Task } from "../model/entities/Task";
 import { taskRepository } from "../model/repositories/taskRepository";
 
 type ListTaskState = {
     loading: boolean;
-    tasks: task[];
+    tasks: Task[];
 }
 
 type ListTaskActions = {
     loadTasks: () => void;
-    addTask: (task: task) => void;
-    deleteTask: (task: task) => void;
-    updateTask: (task: task) => void;
-    setTask: (task: task) => void;
+    addTask: (task: Task) => void;
+    deleteTask: (task: Task) => void;
+    updateTask: (task: Task) => void;
+    setTask: (task: Task) => void;
 }
 
 export function useListTaskViewModel(): ListTaskState & ListTaskActions {
 
     const [loading, setLoading] = useState(false);
-    const [tasks, setTasks] = useState<task[]>([]);
+                const [tasks, setTasks] = useState<Task[]>([]);
 
     const loadTasks = async () => {
         setLoading(true);
@@ -26,19 +26,19 @@ export function useListTaskViewModel(): ListTaskState & ListTaskActions {
         setTasks(tasks);
         setLoading(false);
     }
-    const addTask = async (task: task) => {
+    const addTask = async (task: Task) => {
         await taskRepository.add(task);
         loadTasks();
     }
-    const deleteTask = async (task: task) => {
+    const deleteTask = async (task: Task) => {
         await taskRepository.delete(task);
         loadTasks();
     }
-    const updateTask = async (task: task) => {
+    const updateTask = async (task: Task) => {
         await taskRepository.update(task);
         loadTasks();
     }
-    const setTask = async (task: task) => {
+    const setTask = async (task: Task) => {
         await taskRepository.set(task);
         loadTasks();
     }
