@@ -35,6 +35,10 @@ export default function ListTaskScreen() {
             >
               <Text className="text-black font-medium">{task.titulo}</Text>
               <Text className="text-gray-600 text-sm">{task.decricao}</Text>
+              <Text className="text-gray-600 text-sm">
+               TimeStamp: {new Date(task.timeStamp ?? 0).toLocaleString()}
+
+              </Text>
             </Pressable>
           ))
         )}
