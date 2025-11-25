@@ -9,9 +9,7 @@ export type ListTaskState = {
 
 export type ListTaskActions = {
     loadTasks: () => void;
-    addTask: (task: Task) => void;
     deleteTask: (index: number) => void;
-    updateTask: (index: number, task: Task) => void;
 };
 
 export function useListTaskViewModel(): { state: ListTaskState; actions: ListTaskActions } {
@@ -25,18 +23,8 @@ export function useListTaskViewModel(): { state: ListTaskState; actions: ListTas
         setLoading(false);
     };
 
-    const addTask = (task: Task) => {
-        taskRepository.add(task);
-        loadTasks();
-    };
-
     const deleteTask = (index: number) => {
         taskRepository.delete(index);
-        loadTasks();
-    };
-
-    const updateTask = (index: number, task: Task) => {
-        taskRepository.update(index, task);
         loadTasks();
     };
 
@@ -47,9 +35,7 @@ export function useListTaskViewModel(): { state: ListTaskState; actions: ListTas
         },
         actions: {
             loadTasks,
-            addTask,
             deleteTask,
-            updateTask,
         },
     };
 }
