@@ -1,51 +1,46 @@
-import { useState, useRef } from "react";
-import { task } from "../model/entities/Task";
+import { useState } from "react";
+import { Task } from "../model/entities/Task";
 import { taskRepository } from "../model/repositories/taskRepository";
 
 type ListTaskState = {
     loading: boolean;
-    tasks: task[];
-}
+    tasks: Task[];
+};
 
 type ListTaskActions = {
     loadTasks: () => void;
-    addTask: (task: task) => void;
-    deleteTask: (task: task) => void;
-    updateTask: (task: task) => void;
-    setTask: (task: task) => void;
-}
+    addTask: (task: Task) => void;
+    deleteTask: (index: number) => void;
+    updateTask: (index: number, task: Task) => void;
+};
 
 export function useListTaskViewModel(): ListTaskState & ListTaskActions {
-
     const [loading, setLoading] = useState(false);
-    const [tasks, setTasks] = useState<task[]>([]);
+    const [tasks, setTasks] = useState<Task[]>([]);
 
-    const loadTasks = async () => {
+    const loadTasks = () => {
         setLoading(true);
-        const tasks = await taskRepository.getAll();
+        const tasks = taskRepository.getAll();
         setTasks(tasks);
         setLoading(false);
-    }
-    const addTask = async (task: task) => {
-        await taskRepository.add(task);
-        loadTasks();
-    }
-    const deleteTask = async (task: task) => {
-        await taskRepository.delete(task);
-        loadTasks();
-    }
-    const updateTask = async (task: task) => {
-        await taskRepository.update(task);
-        loadTasks();
-    }
-    const setTask = async (task: task) => {
-        await taskRepository.set(task);
-        loadTasks();
-    }
+    };
 
+    const addTask = (task: Task) => {
+        taskRepository.add(task);
+        loadTasks();
+    };
+
+    const deleteTask = (index: number) => {
+        taskRepository.delete(index);
+        loadTasks();
+    };
+
+    const updateTask = (index: number, task: Task) => {
+        taskRepository.update(index, task);
+        loadTasks();
+    };
 
     return {
-
         // STATE
         loading,
         tasks,
@@ -55,6 +50,5 @@ export function useListTaskViewModel(): ListTaskState & ListTaskActions {
         addTask,
         deleteTask,
         updateTask,
-        setTask,
-    }
+    };
 }

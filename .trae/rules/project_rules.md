@@ -93,6 +93,8 @@ Chama ações da ViewModel.
 
 Pode ter estados visuais (ex.: texto de input).
 
+sempre use o gluestack ui com tailwindcss para criar os componentes visuais.
+
 
 
 ## 📡 4. Fluxo de Comunicação

@@ -1,6 +1,6 @@
-export interface MyPhoto {
-    uri: string;
-    latitude: number | null;
-    longitude: number | null;
-    timestamp: number;
+export interface Task {
+    id : string;
+    titulo: string;
+    decricao: string | null;
+    timeStamp: number | null;
 }
