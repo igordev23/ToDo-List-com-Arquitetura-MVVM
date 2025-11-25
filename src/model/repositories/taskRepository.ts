@@ -1,19 +1,32 @@
-import { MyPhoto } from "../entities/Task";
+import { Task } from "../entities/Task";
+import { TaskRepository } from "../entities/Repository";
 
-class PhotoRepository {
-    private photos: MyPhoto[] = [];
+class TaskRepositoryImpl implements TaskRepository {
+    private tasks: Task[] = [];
 
-    getAll(): MyPhoto[] {
-        return this.photos;
+    getAll(): Task[] {
+        return this.tasks;
     }
 
-    add(photo: MyPhoto) {
-        this.photos = [photo, ...this.photos];
+    getByIndex(index: number): Task | null {
+        return this.tasks[index] || null;
     }
 
-    delete(uri: string) {
-        this.photos = this.photos.filter(p => p.uri !== uri);
+    add(task: Task): void {
+        this.tasks = [task, ...this.tasks];
+    }
+
+    update(index: number, task: Task): void {
+        if (index >= 0 && index < this.tasks.length) {
+            this.tasks[index] = task;
+        }
+    }
+
+    remove(index: number): void {
+        if (index >= 0 && index < this.tasks.length) {
+            this.tasks = this.tasks.filter((_, i) => i !== index);
+        }
     }
 }
 
-export const photoRepository = new PhotoRepository();
+export const taskRepository = new TaskRepositoryImpl();
