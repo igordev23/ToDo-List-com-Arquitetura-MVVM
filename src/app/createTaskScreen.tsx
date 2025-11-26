@@ -34,8 +34,9 @@ export default function CreateTaskScreen() {
       timeStamp: Date.now(),
     };
     createTask(newTask);
-    // Redireciona para a lista de tarefas
-    router.replace("./listTaskScreen");
+
+    // Redireciona para a tela inicial da lista de tarefas, limpando a pilha de navegação
+    router.replace("/listTaskScreen");
   };
 
   return (
