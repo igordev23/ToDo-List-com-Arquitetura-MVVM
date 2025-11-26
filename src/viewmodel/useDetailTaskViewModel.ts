@@ -9,9 +9,9 @@ export type UseDetailTaskViewModelState = {
 };
 
 export type UseDetailTaskViewModelActions = {
-    loadTask: (index: number) => void;
-    updateTask: (index: number, task: Task) => void;
-    deleteTask: (index: number) => void;
+    loadTask: (index: number) => Promise <void>;
+    updateTask: (index: number, task: Task) => Promise <void>;
+    deleteTask: (index: number) => Promise <void>;
 };
 
 export const useDetailTaskViewModel = (
@@ -21,25 +21,25 @@ export const useDetailTaskViewModel = (
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    const loadTask = (index: number) => {
+    const loadTask = async (index: number) => {
         setLoading(true);
         setError(null);
-        const found = taskRepository.getByIndex(index);
+        const found = await taskRepository.getByIndex(index);
         if (!found) {
             setError("Tarefa não encontrada");
         }
         setTask(found);
         setLoading(false);
     };
-
-    const updateTask = (index: number, task: Task) => {
-        taskRepository.update(index, task);
-        loadTask(index);
+    
+    const updateTask = async (index: number, task: Task) => {
+        await taskRepository.update(index, task);
+        await loadTask(index);
     };
 
-    const deleteTask = (index: number) => {
-        taskRepository.delete(index);
-        loadTask(index);
+    const deleteTask = async (index: number) => {
+        await taskRepository.delete(index);
+        await loadTask(index);
     };
 
     return {

@@ -9,7 +9,7 @@ export type CreateTaskState = {
 };
 
 export type CreateTaskActions = {
-    createTask: (task: Task) => void;
+    createTask: (task: Task) => Promise<void>;
 };
 
 export const useCreateTaskViewModel = (
@@ -20,9 +20,9 @@ export const useCreateTaskViewModel = (
     const [loading, setLoading] = useState<boolean>(false);
 
 
-    const createTask = (newTask: Task) => {
+    const createTask = async (newTask: Task) => {
         setLoading(true);
-        taskRepository.add(newTask);
+        await taskRepository.add(newTask);
         setTask(newTask);
         setLoading(false);
     };
