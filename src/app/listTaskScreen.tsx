@@ -62,6 +62,7 @@ export default function ListTaskScreen() {
             </Box>
           ))
         )}
+        
 
         {/* Botão para criar nova tarefa */}
         <Pressable
