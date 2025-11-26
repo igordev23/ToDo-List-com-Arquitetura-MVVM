@@ -10,6 +10,8 @@ export type UseDetailTaskViewModelState = {
 
 export type UseDetailTaskViewModelActions = {
     loadTask: (index: number) => void;
+    updateTask: (index: number, task: Task) => void;
+    deleteTask: (index: number) => void;
 };
 
 export const useDetailTaskViewModel = (
@@ -30,6 +32,16 @@ export const useDetailTaskViewModel = (
         setLoading(false);
     };
 
+    const updateTask = (index: number, task: Task) => {
+        taskRepository.update(index, task);
+        loadTask(index);
+    };
+
+    const deleteTask = (index: number) => {
+        taskRepository.delete(index);
+        loadTask(index);
+    };
+
     return {
         state: {
             task,
@@ -38,6 +50,8 @@ export const useDetailTaskViewModel = (
         },
         actions: {
             loadTask,
+            updateTask,
+            deleteTask,
         },
     };
 };
