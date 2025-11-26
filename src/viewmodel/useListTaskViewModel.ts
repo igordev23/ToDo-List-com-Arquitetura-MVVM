@@ -18,11 +18,15 @@ export function useListTaskViewModel(): { state: ListTaskState; actions: ListTas
     const [tasks, setTasks] = useState<Task[]>([]);
 
     const loadTasks = async () => {
-        setLoading(true);
-        const tasks = await taskRepository.getAll();
-        setTasks(tasks);
-        setLoading(false);
-    };
+  setLoading(true);
+
+  await new Promise(resolve => setTimeout(resolve, 0)); // ✅ garante re-render
+
+  const tasks = await taskRepository.getAll();
+  setTasks(tasks);
+  setLoading(false);
+};
+
 
     const deleteTask = async (index: number) => {
         await taskRepository.delete(index);

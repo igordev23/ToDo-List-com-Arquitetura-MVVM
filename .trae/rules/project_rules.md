@@ -49,9 +49,12 @@ src/
 ├─ viewmodel/
 │ └─ useLoginViewModel.ts
 │
-└─ view/
-├─ components/
-└─ LoginView.tsx
+├─ view/
+│ ├─ components/
+│ └─ LoginView.tsx
+│
+└─ __tests__/   ← pasta de testes obrigatória
+
 ```
 
 
@@ -142,24 +145,132 @@ Criar theme.ts para cores, fontes e espaçamentos.
 
 
 
-## 🧪 6. Testabilidade e Testes Automatizados
+## 🧪 6. 
+### 6.1 Testes São Obrigatórios Para:
+#### 1. ViewModels
 
-Testar apenas a lógica de negócio.
+Testar regras de negócio
 
-Services devem ser testáveis sem depender da UI.
+Testar estados gerados
 
-ViewModels devem ser independentes de React sempre que possível.
+Testar chamadas de ações
 
-Não usar elementos visuais na ViewModel.
+Testar comportamento de erro
 
-Implementação de testes automatizados obrigatória:
+#### 2. Serviços e Repositórios
 
-Testes unitários da camada de lógica de negócio (ex.: ViewModel).
+Sempre acessados via interfaces (DI):
 
-Testes das funções relacionadas ao CRUD de tarefas.
+ITaskRepository
 
-Testes de serviços via interfaces (DI) para facilitar mocks.
+ITaskService
 
+Devem ser mockáveis e substituíveis.
+
+#### 3. CRUD de Tarefas (Obrigatório)
+
+Testar:
+
+criar tarefa
+
+atualizar tarefa
+
+remover tarefa
+
+listar tarefas
+
+#### 4. Armazenamento em Memória  
+
+Para testes, o repositório deve ser implementado em memória:
+
+model/repositories/memory/TaskRepositoryMemory.ts
+
+### 7.2 Estrutura Recomendada dos Testes
+```bash
+src/
+└─ __tests__/
+   ├─ viewmodel/
+   │   ├─ useTaskViewModel.test.ts
+   │   └─ ConverterViewModel.test.ts
+   ├─ model/
+   │   └─ TaskRepositoryMemory.test.ts
+   └─ samples/
+       └─ fakeServices/
+           └─ FakeExchangeRateService.ts
+```
+
+### 7.3 Regras de Testes  
+#### 1. Testes Não Devem Renderizar UI (View)
+
+Views não são testadas
+
+Apenas lógica (Model / ViewModel)
+
+#### 2. Testes Devem Simular Serviços (DI)
+
+Exemplo:
+```ts
+class FakeTaskRepository implements ITaskRepository {
+  constructor(private tasks: Task[] = []) {}
+
+  async list() { return [...this.tasks]; }
+  async create(task) { this.tasks.push(task); return task; }
+  async update(id, data) { /* ... */ }
+  async delete(id) { /* ... */ }
+}
+```
+
+#### 3. Testes de ViewModel Devem:
+
+Observar mudanças de estado
+
+Validar loading, errors, dados e ações
+
+Usar subscribe() OU ler snapshot
+
+#### 4. Exemplo Oficial — Teste de ViewModel
+
+O exemplo abaixo está alinhado às suas regras e ao recebimento de DI:
+```ts
+import { ConverterViewModel } from './ConverterViewModel';
+import { IExchangeRateService } from '../domain/IExchangeRateService';
+
+class FakeService implements IExchangeRateService {
+  constructor(private readonly rate: number, private readonly shouldFail = false) {}
+  async getRate(base: string, target: string) {
+    if (this.shouldFail) throw new Error('Falha simulada');
+    return { base, target, rate: this.rate };
+  }
+}
+
+describe('ConverterViewModel', () => {
+  test('converte 100 BRL para USD usando taxa mockada', async () => {
+    const vm = new ConverterViewModel(new FakeService(0.2));
+    const states: any[] = [];
+    vm.subscribe((s) => states.push({ ...s }));
+
+    vm.setAmountBRL(100);
+    await vm.convert();
+
+    const last = vm.snapshot;
+    expect(last.rate).toBe(0.2);
+    expect(last.amountUSD).toBe(20);
+    expect(states.some((s) => s.loading === true)).toBeTruthy();
+    expect(last.loading).toBe(false);
+  });
+
+  test('propaga erro do serviço e desliga loading', async () => {
+    const vm = new ConverterViewModel(new FakeService(0.2, true));
+    vm.setAmountBRL(50);
+    await vm.convert();
+
+    const last = vm.snapshot;
+    expect(last.error).toBe('Falha simulada');
+    expect(last.loading).toBe(false);
+    expect(last.amountUSD).toBeUndefined();
+  });
+});
+```
 
 
 ## 🚀 8. Evolução Futura (MVVM Avançado)
