@@ -35,8 +35,8 @@ export default function CreateTaskScreen() {
     };
     createTask(newTask);
 
-    // Redireciona para a tela inicial da lista de tarefas, limpando a pilha de navegação
-    router.replace("/listTaskScreen");
+    // Volta para a tela anterior na pilha de navegação
+    router.back();
   };
 
   return (
