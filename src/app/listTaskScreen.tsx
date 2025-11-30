@@ -8,7 +8,7 @@ import { FlatList } from "react-native";
 import { Trash2 } from "lucide-react-native";
 
 // Função para truncar textos longos
-function truncate(text: string, max: number = 20) {
+function truncate(text: string, max: number = 30) {
   if (!text) return "";
   return text.length > max ? text.substring(0, max) + "..." : text;
 }
