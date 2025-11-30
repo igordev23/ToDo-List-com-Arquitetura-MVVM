@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
@@ -7,20 +8,39 @@ import { useFocusEffect } from "@react-navigation/native";
 import { FlatList } from "react-native";
 import { Trash2 } from "lucide-react-native";
 import { truncate } from "../utils/textUtils";
-
-
-
-
+import { FeedbackCard } from "../view/components/FeedbackCard";
 
 export default function ListTaskScreen() {
   const router = useRouter();
   const { state, actions } = useListTaskViewModel();
-  const { tasks, loading } = state;
+  const { tasks, loading, error } = state;
   const { loadTasks, deleteTask } = actions;
+
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useFocusEffect(() => {
     loadTasks();
   });
+
+  // Se acontecer um erro, mostrar feedback
+  useEffect(() => {
+    if (error) {
+      setSuccessMessage(null); // apaga mensagem de sucesso
+    }
+  }, [error]);
+
+  const handleDelete = async (index: number) => {
+    await deleteTask(index);
+
+    // Se após o delete NÃO houver erro → sucesso
+    if (!state.error) {
+      setSuccessMessage("Tarefa excluída com sucesso!");
+
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 2500);
+    }
+  };
 
   const renderTaskItem = ({ item: task, index }: { item: any; index: number }) => (
     <Pressable
@@ -42,7 +62,7 @@ export default function ListTaskScreen() {
       </Box>
 
       <Pressable
-        onPress={() => deleteTask(index)}
+        onPress={() => handleDelete(index)}
         className="p-2 bg-red-500 rounded-full active:opacity-80"
       >
         <Trash2 size={20} color="white" />
@@ -57,6 +77,29 @@ export default function ListTaskScreen() {
       </Box>
 
       <Box className="flex-1 p-4">
+
+        {/* FEEDBACK DE SUCESSO */}
+        {successMessage && (
+          <Box className="mb-4">
+            <FeedbackCard
+              type="success"
+              message={successMessage}
+              onClose={() => setSuccessMessage(null)}
+            />
+          </Box>
+        )}
+
+        {/* FEEDBACK DE ERRO (DO VIEWMODEL) */}
+        {error && (
+          <Box className="mb-4">
+            <FeedbackCard
+              type="error"
+              message={error}
+              onClose={() => {}}
+            />
+          </Box>
+        )}
+
         {loading ? (
           <Text className="text-center text-gray-500">Carregando...</Text>
         ) : (
