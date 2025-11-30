@@ -14,7 +14,7 @@ export default function CreateTaskScreen() {
   const { state, actions } = useCreateTaskViewModel({
     id: "",
     titulo: "",
-    decricao: "",
+    descricao: "",
     timeStamp: Date.now(),
   });
 
@@ -23,14 +23,14 @@ export default function CreateTaskScreen() {
 
   // Estados locais para os campos de entrada
   const [title, setTitle] = useState(task.titulo ?? ""); // Garante que o valor inicial seja uma string
-  const [description, setDescription] = useState(task.decricao ?? ""); // Garante que o valor inicial seja uma string
+  const [description, setDescription] = useState(task.descricao ?? ""); // Garante que o valor inicial seja uma string
 
   const handleSaveTask = () => {
     // Cria a nova tarefa usando o ViewModel
     const newTask: Task = {
       id: `${Date.now()}`, // Gera um ID único baseado no timestamp atual
       titulo: title,
-      decricao: description,
+      descricao: description,
       timeStamp: Date.now(),
     };
     createTask(newTask);

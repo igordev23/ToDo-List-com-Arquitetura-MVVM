@@ -27,7 +27,7 @@ export default function DetailTaskScreen() {
   useEffect(() => {
     if (task) {
       setTitle(task.titulo ?? "");
-      setDescription(task.decricao ?? "");
+      setDescription(task.descricao ?? "");
     }
   }, [task]);
 

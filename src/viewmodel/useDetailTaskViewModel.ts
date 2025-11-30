@@ -9,9 +9,9 @@ export type UseDetailTaskViewModelState = {
 };
 
 export type UseDetailTaskViewModelActions = {
-    loadTask: (index: number) => Promise <void>;
-    updateTask: (index: number, task: Task) => Promise <void>;
-    deleteTask: (index: number) => Promise <void>;
+    loadTask: (index: number) => Promise<void>;
+    updateTask: (index: number, task: Task) => Promise<void>;
+    deleteTask: (index: number) => Promise<void>;
 };
 
 export const useDetailTaskViewModel = (
@@ -24,22 +24,43 @@ export const useDetailTaskViewModel = (
     const loadTask = async (index: number) => {
         setLoading(true);
         setError(null);
-        const found = await taskRepository.getByIndex(index);
-        if (!found) {
-            setError("Tarefa não encontrada");
+        try {
+            const found = await taskRepository.getByIndex(index);
+            if (!found) {
+                setError("Tarefa não encontrada");
+            }
+            setTask(found);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Erro ao carregar a tarefa");
+        } finally {
+            setLoading(false);
         }
-        setTask(found);
-        setLoading(false);
     };
-    
+
     const updateTask = async (index: number, task: Task) => {
-        await taskRepository.update(index, task);
-        await loadTask(index);
+        setLoading(true);
+        setError(null);
+        try {
+            await taskRepository.update(index, task);
+            await loadTask(index);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Erro ao atualizar a tarefa");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const deleteTask = async (index: number) => {
-        await taskRepository.delete(index);
-        await loadTask(index);
+        setLoading(true);
+        setError(null);
+        try {
+            await taskRepository.delete(index);
+            setTask(null); // Limpa a tarefa atual após a exclusão
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Erro ao deletar a tarefa");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return {

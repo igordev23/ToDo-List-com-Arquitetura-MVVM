@@ -21,7 +21,7 @@ describe("TaskRepository (AsyncStorage REAL)", () => {
   /**
    * Testa se o repositório começa vazio quando não existem tarefas salvas.
    */
-  test("lista começa vazia", async () => {
+  test("Testa se o repositório começa vazio quando não existem tarefas salvas.", async () => {
     const tasks = await taskRepository.getAll();  // busca todas as tarefas
     expect(tasks).toEqual([]);                    // deve retornar lista vazia
   });
@@ -29,7 +29,7 @@ describe("TaskRepository (AsyncStorage REAL)", () => {
   /**
    * Testa se uma tarefa é corretamente adicionada ao AsyncStorage.
    */
-  test("adiciona uma tarefa", async () => {
+  test("Testa se uma tarefa é corretamente adicionada ao AsyncStorage.", async () => {
     await taskRepository.add({
       titulo: "Teste",
       descricao: null,
@@ -46,7 +46,7 @@ describe("TaskRepository (AsyncStorage REAL)", () => {
   /**
    * Testa se é possível recuperar uma tarefa pela sua posição no array.
    */
-  test("obtém tarefa pelo index", async () => {
+  test("Testa se é possível recuperar uma tarefa pela sua posição no array.", async () => {
     await taskRepository.add({
       titulo: "T1",
       descricao: null,
@@ -63,7 +63,7 @@ describe("TaskRepository (AsyncStorage REAL)", () => {
   /**
    * Testa se a atualização de uma tarefa funciona corretamente.
    */
-  test("atualiza uma tarefa", async () => {
+  test("Testa se a atualização de uma tarefa funciona corretamente.", async () => {
     await taskRepository.add({
       titulo: "Old",
       descricao: null,
@@ -89,7 +89,7 @@ describe("TaskRepository (AsyncStorage REAL)", () => {
    * Importante: como usamos unshift (insere no início),
    * a primeira tarefa adicionada acaba ficando no final da lista.
    */
-  test("deleta uma tarefa", async () => {
+  test("Testa se a exclus'ão de uma tarefa funciona corretamente.", async () => {
     await taskRepository.add({
       titulo: "A",
       descricao: null,

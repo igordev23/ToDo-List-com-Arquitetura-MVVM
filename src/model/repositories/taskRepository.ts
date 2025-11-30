@@ -8,7 +8,6 @@ import { TaskRepository } from "../entities/Repository";
  * funcionando como uma "simulação de banco de dados" dentro do celular.
  */
 class TaskRepositoryImpl implements TaskRepository {
-
   // Nome da chave onde todas as tarefas serão armazenadas no AsyncStorage
   private key = "@tasks";
 
@@ -18,7 +17,11 @@ class TaskRepositoryImpl implements TaskRepository {
    * garantindo que cada teste comece com o "banco vazio".
    */
   async resetForTests() {
-    await AsyncStorage.removeItem(this.key);
+    try {
+      await AsyncStorage.removeItem(this.key);
+    } catch (err) {
+      throw new Error("Erro ao resetar o armazenamento para testes: " + (err instanceof Error ? err.message : err));
+    }
   }
 
   /**
@@ -26,8 +29,12 @@ class TaskRepositoryImpl implements TaskRepository {
    * Caso não exista nada salvo ainda, retorna um array vazio.
    */
   private async load(): Promise<Task[]> {
-    const raw = await AsyncStorage.getItem(this.key);
-    return raw ? JSON.parse(raw) : [];
+    try {
+      const raw = await AsyncStorage.getItem(this.key);
+      return raw ? JSON.parse(raw) : [];
+    } catch (err) {
+      throw new Error("Erro ao carregar tarefas do armazenamento: " + (err instanceof Error ? err.message : err));
+    }
   }
 
   /**
@@ -35,15 +42,23 @@ class TaskRepositoryImpl implements TaskRepository {
    * Converte o array de objetos para JSON antes de salvar.
    */
   private async persist(tasks: Task[]): Promise<void> {
-    await AsyncStorage.setItem(this.key, JSON.stringify(tasks));
+    try {
+      await AsyncStorage.setItem(this.key, JSON.stringify(tasks));
+    } catch (err) {
+      throw new Error("Erro ao salvar tarefas no armazenamento: " + (err instanceof Error ? err.message : err));
+    }
   }
-  
+
   /**
    * Retorna todas as tarefas salvas no armazenamento local.
    * Útil na ViewModel para listar tudo na tela.
    */
   async getAll(): Promise<Task[]> {
-    return await this.load();
+    try {
+      return await this.load();
+    } catch (err) {
+      throw new Error("Erro ao obter todas as tarefas: " + (err instanceof Error ? err.message : err));
+    }
   }
 
   /**
@@ -51,8 +66,12 @@ class TaskRepositoryImpl implements TaskRepository {
    * Se a posição não existir, retorna null.
    */
   async getByIndex(index: number): Promise<Task | null> {
-    const tasks = await this.load();
-    return tasks[index] ?? null;
+    try {
+      const tasks = await this.load();
+      return tasks[index] ?? null;
+    } catch (err) {
+      throw new Error("Erro ao buscar tarefa pelo índice: " + (err instanceof Error ? err.message : err));
+    }
   }
 
   /**
@@ -61,9 +80,13 @@ class TaskRepositoryImpl implements TaskRepository {
    * Depois regrava toda a lista no AsyncStorage.
    */
   async add(task: Task): Promise<void> {
-    const tasks = await this.load();
-    tasks.unshift(task);
-    await this.persist(tasks);
+    try {
+      const tasks = await this.load();
+      tasks.unshift(task);
+      await this.persist(tasks);
+    } catch (err) {
+      throw new Error("Erro ao adicionar uma nova tarefa: " + (err instanceof Error ? err.message : err));
+    }
   }
 
   /**
@@ -72,11 +95,14 @@ class TaskRepositoryImpl implements TaskRepository {
    * Se o índice for inválido, não faz nada.
    */
   async update(index: number, task: Task): Promise<void> {
-    const tasks = await this.load();
-    
-    if (index >= 0 && index < tasks.length) {
-      tasks[index] = task;
-      await this.persist(tasks);
+    try {
+      const tasks = await this.load();
+      if (index >= 0 && index < tasks.length) {
+        tasks[index] = task;
+        await this.persist(tasks);
+      }
+    } catch (err) {
+      throw new Error("Erro ao atualizar a tarefa: " + (err instanceof Error ? err.message : err));
     }
   }
 
@@ -85,11 +111,14 @@ class TaskRepositoryImpl implements TaskRepository {
    * Filtra todas as tarefas menos aquela da posição especificada.
    */
   async delete(index: number): Promise<void> {
-    const tasks = await this.load();
-
-    if (index >= 0 && index < tasks.length) {
-      const newList = tasks.filter((_, i) => i !== index);
-      await this.persist(newList);
+    try {
+      const tasks = await this.load();
+      if (index >= 0 && index < tasks.length) {
+        const newList = tasks.filter((_, i) => i !== index);
+        await this.persist(newList);
+      }
+    } catch (err) {
+      throw new Error("Erro ao deletar a tarefa: " + (err instanceof Error ? err.message : err));
     }
   }
 }
