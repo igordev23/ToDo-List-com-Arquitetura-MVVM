@@ -6,6 +6,7 @@ import { TextInput } from "react-native";
 import { useCreateTaskViewModel } from "../viewmodel/useCreateTaskViewModel";
 import { useState } from "react";
 import { Task } from "../model/entities/Task";
+import { FeedbackCard } from "../view/components/FeedbackCard";
 
 export default function CreateTaskScreen() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function CreateTaskScreen() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const handleSaveTask = async () => {
     const newTask: Task = {
@@ -32,9 +34,12 @@ export default function CreateTaskScreen() {
     };
 
     const success = await createTask(newTask);
-
     if (success) {
-      router.back();
+      setSuccessMessage("Tarefa criada com sucesso!");
+      setTimeout(() => {
+        setSuccessMessage(null);
+        router.back();
+      }, 1500);
     }
   };
 
@@ -44,6 +49,28 @@ export default function CreateTaskScreen() {
       <Box className="py-4 px-6 bg-primary-500">
         <Text className="text-white text-lg font-bold">Criar Nova Tarefa</Text>
       </Box>
+
+      {error ? (
+        <Box className="mt-4">
+          <FeedbackCard
+            type="error"
+            title="Erro"
+            message={error}
+            onClose={() => {}}
+          />
+        </Box>
+      ) : null}
+
+      {successMessage ? (
+        <Box className="mt-4">
+          <FeedbackCard
+            type="success"
+            title="Sucesso"
+            message={successMessage}
+            onClose={() => setSuccessMessage(null)}
+          />
+        </Box>
+      ) : null}
 
       {/* Form */}
       <Box className="mt-4">
