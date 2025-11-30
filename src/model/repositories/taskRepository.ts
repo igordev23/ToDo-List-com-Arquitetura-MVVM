@@ -65,13 +65,9 @@ class TaskRepositoryImpl implements TaskRepository {
    * Busca uma tarefa específica pelo índice (posição no array).
    * Se a posição não existir, retorna null.
    */
-  async getByIndex(index: number): Promise<Task | null> {
-    try {
-      const tasks = await this.load();
-      return tasks[index] ?? null;
-    } catch (err) {
-      throw new Error("Erro ao buscar tarefa pelo índice: " + (err instanceof Error ? err.message : err));
-    }
+  async getById(id: string): Promise<Task | null> {
+    const tasks = await this.load();
+    return tasks.find(t => t.id === id) ?? null;
   }
 
   /**
@@ -94,10 +90,11 @@ class TaskRepositoryImpl implements TaskRepository {
    * Apenas substitui o objeto da tarefa naquela posição.
    * Se o índice for inválido, não faz nada.
    */
-  async update(index: number, task: Task): Promise<void> {
+  async update(id: string, task: Task): Promise<void> {
     try {
       const tasks = await this.load();
-      if (index >= 0 && index < tasks.length) {
+      const index = tasks.findIndex(t => t.id === id);
+      if (index >= 0) {
         tasks[index] = task;
         await this.persist(tasks);
       }
@@ -110,10 +107,11 @@ class TaskRepositoryImpl implements TaskRepository {
    * Deleta uma tarefa pelo índice.
    * Filtra todas as tarefas menos aquela da posição especificada.
    */
-  async delete(index: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     try {
       const tasks = await this.load();
-      if (index >= 0 && index < tasks.length) {
+      const index = tasks.findIndex(t => t.id === id);
+      if (index >= 0) {
         const newList = tasks.filter((_, i) => i !== index);
         await this.persist(newList);
       }

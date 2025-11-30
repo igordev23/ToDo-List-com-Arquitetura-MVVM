@@ -54,7 +54,7 @@ describe("TaskRepository (AsyncStorage REAL)", () => {
       timeStamp: null
     });
 
-    const task = await taskRepository.getByIndex(0);
+    const task = await taskRepository.getById("1");
 
     expect(task).not.toBeNull();
     expect(task?.titulo).toBe("T1");        // mesma tarefa inserida
@@ -72,14 +72,14 @@ describe("TaskRepository (AsyncStorage REAL)", () => {
     });
 
     // atualiza o item na posição 0
-    await taskRepository.update(0, {
+    await taskRepository.update("1", {
       titulo: "New",
       descricao: null,
       id: "1",
       timeStamp: null
     });
 
-    const task = await taskRepository.getByIndex(0);
+    const task = await taskRepository.getById("1");
 
     expect(task?.titulo).toBe("New");     // título deve ter sido atualizado
   });
@@ -105,7 +105,7 @@ describe("TaskRepository (AsyncStorage REAL)", () => {
     });
 
     // Deleta o item no index 0 (que será o "B", porque unshift coloca no topo)
-    await taskRepository.delete(0);
+    await taskRepository.delete("2");
 
     const tasks = await taskRepository.getAll();
 

@@ -19,7 +19,7 @@ export default function DetailTaskScreen() {
 
   useEffect(() => {
     if (index !== undefined) {
-      loadTask(Number(index)); // Carrega a tarefa com base no índice
+      loadTask(task!.id); // Carrega a tarefa com base no índice
     }
   }, [index]);
 
@@ -39,13 +39,13 @@ export default function DetailTaskScreen() {
         titulo: title,
         decricao: description,
       };
-      updateTask(Number(index), updatedTask);
+      updateTask(task.id, updatedTask);
     }
   };
 
   const handleDeleteTask = () => {
     if (index !== undefined) {
-      deleteTask(Number(index)); // Deleta a tarefa
+      deleteTask(task!.id); // Deleta a tarefa
       router.replace("./listTaskScreen"); // Redireciona para a lista de tarefas
     }
   };

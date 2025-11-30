@@ -15,64 +15,67 @@ export type UseDetailTaskViewModelActions = {
 };
 
 export const useDetailTaskViewModel = (
-    initialTask: Task | null
-): { state: UseDetailTaskViewModelState; actions: UseDetailTaskViewModelActions } => {
-    const [task, setTask] = useState<Task | null>(initialTask);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+  initialTask: Task | null
+) => {
+  const [task, setTask] = useState<Task | null>(initialTask);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-    const loadTask = async (index: number) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const found = await taskRepository.getByIndex(index);
-            if (!found) {
-                setError("Tarefa não encontrada");
-            }
-            setTask(found);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : "Erro ao carregar a tarefa");
-        } finally {
-            setLoading(false);
-        }
-    };
+  const loadTask = async (id: string) => {
+    setLoading(true);
+    setError(null);
 
-    const updateTask = async (index: number, task: Task) => {
-        setLoading(true);
-        setError(null);
-        try {
-            await taskRepository.update(index, task);
-            await loadTask(index);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : "Erro ao atualizar a tarefa");
-        } finally {
-            setLoading(false);
-        }
-    };
+    try {
+      const found = await taskRepository.getById(id);
+      if (!found) throw new Error("Tarefa não encontrada");
+      setTask(found);
 
-    const deleteTask = async (index: number) => {
-        setLoading(true);
-        setError(null);
-        try {
-            await taskRepository.delete(index);
-            setTask(null); // Limpa a tarefa atual após a exclusão
-        } catch (err) {
-            setError(err instanceof Error ? err.message : "Erro ao deletar a tarefa");
-        } finally {
-            setLoading(false);
-        }
-    };
+    } catch (err: any) {
+      setError(err.message);
 
-    return {
-        state: {
-            task,
-            loading,
-            error,
-        },
-        actions: {
-            loadTask,
-            updateTask,
-            deleteTask,
-        },
-    };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateTask = async (id: string, updated: Task): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      await taskRepository.update(id, updated);
+      setTask(updated);
+      return true;
+
+    } catch (err: any) {
+      setError(err.message);
+      return false;
+
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteTask = async (id: string): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      await taskRepository.delete(id);
+      setTask(null);
+      return true;
+
+    } catch (err: any) {
+      setError(err.message);
+      return false;
+
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    state: { task, loading, error },
+    actions: { loadTask, updateTask, deleteTask },
+  };
 };

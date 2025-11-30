@@ -66,7 +66,7 @@ describe("useListTaskViewModel", () => {
     });
 
     await act(async () => {
-      await result.current.actions.deleteTask(0);
+      await result.current.actions.deleteTask("1");
     });
 
     const last = result.current.state;

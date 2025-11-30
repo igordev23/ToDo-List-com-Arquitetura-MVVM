@@ -42,7 +42,7 @@ export default function ListTaskScreen() {
       </Box>
 
       <Pressable
-        onPress={() => deleteTask(index)}
+        onPress={() => deleteTask(task.id)}
         className="p-2 bg-red-500 rounded-full active:opacity-80"
       >
         <Trash2 size={20} color="white" />
