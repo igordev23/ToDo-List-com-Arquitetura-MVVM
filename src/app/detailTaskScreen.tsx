@@ -5,20 +5,24 @@ import { Pressable } from "@/components/ui/pressable";
 import { TextInput } from "react-native";
 import { useDetailTaskViewModel } from "../viewmodel/useDetailTaskViewModel";
 import { useEffect, useState } from "react";
+import { FeedbackCard } from "../view/components/FeedbackCard";
 
 export default function DetailTaskScreen() {
   const router = useRouter();
   const { index } = useLocalSearchParams();
   const { state, actions } = useDetailTaskViewModel(null);
+
   const { task, loading, error } = state;
   const { loadTask, updateTask, deleteTask } = actions;
 
-  // Estados locais para os campos de entrada
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  // Estado para exibir mensagem dinâmica
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  // Mensagem dinâmica
+  const [feedback, setFeedback] = useState<{
+    type: "success" | "error" | "info" | "warning";
+    message: string;
+  } | null>(null);
 
   useEffect(() => {
     if (index !== undefined) {
@@ -33,6 +37,11 @@ export default function DetailTaskScreen() {
     }
   }, [task]);
 
+  const showFeedback = (type: any, message: string) => {
+    setFeedback({ type, message });
+    setTimeout(() => setFeedback(null), 3500);
+  };
+
   const handleUpdateTask = async () => {
     if (task && index !== undefined) {
       const updatedTask = {
@@ -42,8 +51,9 @@ export default function DetailTaskScreen() {
       };
       const success = await updateTask(Number(index), updatedTask);
       if (success) {
-        setSuccessMessage("Tarefa atualizada com sucesso!");
-        setTimeout(() => setSuccessMessage(null), 3000); // Remove a mensagem após 3 segundos
+        showFeedback("success", "Tarefa atualizada com sucesso!");
+      } else {
+        showFeedback("error", "Erro ao atualizar tarefa.");
       }
     }
   };
@@ -52,11 +62,10 @@ export default function DetailTaskScreen() {
     if (index !== undefined) {
       const success = await deleteTask(Number(index));
       if (success) {
-        setSuccessMessage("Tarefa deletada com sucesso!");
-        setTimeout(() => {
-          setSuccessMessage(null);
-          router.replace("./listTaskScreen");
-        }, 3000); // Redireciona após 3 segundos
+        showFeedback("success", "Tarefa deletada com sucesso!");
+        setTimeout(() => router.replace("./listTaskScreen"), 3500);
+      } else {
+        showFeedback("error", "Erro ao deletar tarefa.");
       }
     }
   };
@@ -68,10 +77,14 @@ export default function DetailTaskScreen() {
         <Text className="text-white text-lg font-bold">Detalhes da Tarefa</Text>
       </Box>
 
-      {/* Mensagem dinâmica */}
-      {successMessage && (
-        <Box className="mt-4 p-4 bg-green-100 rounded-lg shadow">
-          <Text className="text-green-700 font-medium">{successMessage}</Text>
+      {/* FEEDBACK CARD */}
+      {feedback && (
+        <Box className="mt-4">
+          <FeedbackCard
+            type={feedback.type}
+            message={feedback.message}
+            onClose={() => setFeedback(null)}
+          />
         </Box>
       )}
 
@@ -80,7 +93,7 @@ export default function DetailTaskScreen() {
         {loading ? (
           <Text className="text-center text-gray-500">Carregando...</Text>
         ) : error ? (
-          <Text className="text-center text-red-500">{error}</Text>
+          <FeedbackCard type="error" message={error} />
         ) : task ? (
           <>
             <Text className="text-black font-medium mb-2">Título</Text>
@@ -104,13 +117,11 @@ export default function DetailTaskScreen() {
             </Text>
           </>
         ) : (
-          <Text className="text-center text-gray-500">
-            Nenhuma tarefa encontrada.
-          </Text>
+          <FeedbackCard type="info" message="Nenhuma tarefa encontrada." />
         )}
       </Box>
 
-      {/* Botões de ação */}
+      {/* Botões */}
       <Box className="mt-4 space-y-4">
         <Pressable
           onPress={handleUpdateTask}
