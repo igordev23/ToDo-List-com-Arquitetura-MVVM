@@ -7,6 +7,8 @@ import { useDetailTaskViewModel } from "../viewmodel/useDetailTaskViewModel";
 import { useEffect, useState } from "react";
 import { FeedbackCard } from "../view/components/FeedbackCard";
 
+
+
 export default function DetailTaskScreen() {
   const router = useRouter();
   const { index } = useLocalSearchParams();
