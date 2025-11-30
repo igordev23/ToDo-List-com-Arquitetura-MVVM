@@ -7,28 +7,34 @@ import { useFocusEffect } from "@react-navigation/native";
 import { FlatList } from "react-native";
 import { Trash2 } from "lucide-react-native";
 
+// Função para truncar textos longos
+function truncate(text: string, max: number = 20) {
+  if (!text) return "";
+  return text.length > max ? text.substring(0, max) + "..." : text;
+}
+
 export default function ListTaskScreen() {
   const router = useRouter();
   const { state, actions } = useListTaskViewModel();
   const { tasks, loading } = state;
   const { loadTasks, deleteTask } = actions;
 
-  // Carrega as tarefas sempre que a tela ganha foco
   useFocusEffect(() => {
     loadTasks();
   });
 
-   const renderTaskItem = ({ item: task, index }: { item: any; index: number }) => (
+  const renderTaskItem = ({ item: task, index }: { item: any; index: number }) => (
     <Pressable
       onPress={() => router.replace(`./detailTaskScreen?index=${index}`)}
       className="mb-4 p-4 bg-white rounded-2xl shadow-md border border-gray-200 active:opacity-90 flex-row justify-between items-center"
     >
-      {/* Informações da tarefa */}
       <Box className="flex-1 pr-3">
-        <Text className="text-black font-bold text-lg">{task.titulo}</Text>
+        <Text className="text-black font-bold text-lg">
+          {truncate(task.titulo)}
+        </Text>
 
         <Text className="text-gray-600 text-sm mt-1">
-          {task.decricao}
+          {truncate(task.descricao)}
         </Text>
 
         <Text className="text-gray-400 text-xs mt-1">
@@ -36,7 +42,6 @@ export default function ListTaskScreen() {
         </Text>
       </Box>
 
-      {/* Botão de Deletar */}
       <Pressable
         onPress={() => deleteTask(index)}
         className="p-2 bg-red-500 rounded-full active:opacity-80"
@@ -48,12 +53,10 @@ export default function ListTaskScreen() {
 
   return (
     <Box className="flex-1 bg-white">
-      {/* Header */}
       <Box className="py-4 px-6 bg-primary-500">
         <Text className="text-white text-lg font-bold">Lista de Tarefas</Text>
       </Box>
 
-      {/* Lista de Tarefas */}
       <Box className="flex-1 p-4">
         {loading ? (
           <Text className="text-center text-gray-500">Carregando...</Text>
@@ -61,13 +64,11 @@ export default function ListTaskScreen() {
           <FlatList
             data={tasks}
             renderItem={renderTaskItem}
-
             keyExtractor={(item, index) => index.toString()}
             contentContainerStyle={{ paddingBottom: 26 }}
           />
         )}
 
-        {/* Botão para criar nova tarefa */}
         <Pressable
           onPress={() => router.push("./createTaskScreen")}
           className="mt-4 px-6 mb-6 py-3 bg-primary-500 rounded-xl shadow-lg"

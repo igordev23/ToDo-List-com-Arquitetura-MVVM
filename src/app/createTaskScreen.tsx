@@ -10,7 +10,6 @@ import { Task } from "../model/entities/Task";
 export default function CreateTaskScreen() {
   const router = useRouter();
 
-  // Inicializa o ViewModel com uma tarefa vazia
   const { state, actions } = useCreateTaskViewModel({
     id: "",
     titulo: "",
@@ -18,25 +17,25 @@ export default function CreateTaskScreen() {
     timeStamp: Date.now(),
   });
 
-  const { task, loading } = state;
+  const { loading, error } = state;
   const { createTask } = actions;
 
-  // Estados locais para os campos de entrada
-  const [title, setTitle] = useState(task.titulo ?? ""); // Garante que o valor inicial seja uma string
-  const [description, setDescription] = useState(task.descricao ?? ""); // Garante que o valor inicial seja uma string
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
-  const handleSaveTask = () => {
-    // Cria a nova tarefa usando o ViewModel
+  const handleSaveTask = async () => {
     const newTask: Task = {
-      id: `${Date.now()}`, // Gera um ID único baseado no timestamp atual
+      id: `${Date.now()}`,
       titulo: title,
       descricao: description,
       timeStamp: Date.now(),
     };
-    createTask(newTask);
 
-    // Volta para a tela anterior na pilha de navegação
-    router.back();
+    const success = await createTask(newTask);
+
+    if (success) {
+      router.back();
+    }
   };
 
   return (
@@ -46,7 +45,7 @@ export default function CreateTaskScreen() {
         <Text className="text-white text-lg font-bold">Criar Nova Tarefa</Text>
       </Box>
 
-      {/* Formulário para criar tarefa */}
+      {/* Form */}
       <Box className="mt-4">
         <Text className="text-black font-medium mb-2">Título</Text>
         <TextInput
@@ -63,12 +62,14 @@ export default function CreateTaskScreen() {
           placeholder="Digite a descrição da tarefa"
           className="p-4 bg-gray-100 rounded-lg shadow"
         />
+
+        {error && <Text className="text-red-500 mt-2">{error}</Text>}
       </Box>
 
-      {/* Botão para salvar tarefa */}
+      {/* Save button */}
       <Pressable
         onPress={handleSaveTask}
-        disabled={loading} // Desabilita o botão enquanto está carregando
+        disabled={loading}
         className={`mt-4 px-6 py-3 rounded-xl shadow-lg ${
           loading ? "bg-gray-400" : "bg-primary-500"
         }`}
