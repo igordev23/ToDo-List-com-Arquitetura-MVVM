@@ -6,12 +6,11 @@ import { useListTaskViewModel } from "../viewmodel/useListTaskViewModel";
 import { useFocusEffect } from "@react-navigation/native";
 import { FlatList } from "react-native";
 import { Trash2 } from "lucide-react-native";
+import { truncate } from "../utils/textUtils";
 
-// Função para truncar textos longos
-function truncate(text: string, max: number = 30) {
-  if (!text) return "";
-  return text.length > max ? text.substring(0, max) + "..." : text;
-}
+
+
+
 
 export default function ListTaskScreen() {
   const router = useRouter();
@@ -30,11 +29,11 @@ export default function ListTaskScreen() {
     >
       <Box className="flex-1 pr-3">
         <Text className="text-black font-bold text-lg">
-          {truncate(task.titulo)}
+          {truncate(task.titulo, 30)}
         </Text>
 
         <Text className="text-gray-600 text-sm mt-1">
-          {truncate(task.descricao)}
+          {truncate(task.descricao, 50)}
         </Text>
 
         <Text className="text-gray-400 text-xs mt-1">
