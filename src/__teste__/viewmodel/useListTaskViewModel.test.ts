@@ -11,13 +11,13 @@ describe("useListTaskViewModel", () => {
       {
         id: "1",
         titulo: "Estudar MVVM",
-        decricao: "desc",
+        descricao: "desc",
         timeStamp: Date.now(),
       },
       {
         id: "2",
         titulo: "Criar testes",
-        decricao: "desc",
+        descricao: "desc",
         timeStamp: Date.now(),
       },
     ];
@@ -42,13 +42,13 @@ describe("useListTaskViewModel", () => {
       {
         id: "1",
         titulo: "A",
-        decricao: null,
+        descricao: null,
         timeStamp: Date.now(),
       },
       {
         id: "2",
         titulo: "B",
-        decricao: null,
+        descricao: null,
         timeStamp: Date.now(),
       },
     ];

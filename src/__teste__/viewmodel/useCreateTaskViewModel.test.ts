@@ -9,7 +9,7 @@ describe("useCreateTaskViewModel", () => {
   const mockInitialTask: Task = {
     id: "",
     titulo: "",
-    decricao: "",
+    descricao: "",
     timeStamp: Date.now(),
   };
 
@@ -30,7 +30,7 @@ describe("useCreateTaskViewModel", () => {
     const newTask: Task = {
       id: "123",
       titulo: "Nova Tarefa",
-      decricao: "Descrição da nova tarefa",
+      descricao: "Descrição da nova tarefa",
       timeStamp: Date.now(),
     };
 
@@ -52,7 +52,7 @@ describe("useCreateTaskViewModel", () => {
     const newTask: Task = {
       id: "123",
       titulo: "Nova Tarefa",
-      decricao: "Descrição da nova tarefa",
+      descricao: "Descrição da nova tarefa",
       timeStamp: Date.now(),
     };
 
