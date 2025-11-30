@@ -1,155 +1,123 @@
-# 📸 Aplicativo de Câmera com Arquitetura MVVM
+# ToDo List com Arquitetura MVVM, Inversão de Dependências e Testes Automatizados
 
-## 📘 Disciplina
-**Programação para Dispositivos Móveis (PDM)**
+## 📋 Identificação dos Integrantes do Grupo
+- **Francisco Igor Silva Santos** - 2024116TADS0030 
+- **Nome Completo 2** - Matrícula 2  
+- **Nome Completo 3** - Matrícula 3  
+- **Nome Completo 4** - Matrícula 4
+- **Nome Completo 5** - Matrícula 5   
 
-## 🎯 Objetivo Geral
-Este projeto tem como objetivo refatorar um aplicativo de câmera desenvolvido anteriormente, reorganizando-o segundo a arquitetura **MVVM (Model-View-ViewModel)**.  
-Além disso, o app foi dividido em telas independentes e toda a interface foi reconstruída usando a biblioteca **Gluestack UI**.
+## 📝 Descrição do Projeto
+Este projeto é uma aplicação de lista de tarefas (ToDo List) desenvolvida utilizando a arquitetura **MVVM (Model-View-ViewModel)**, com aplicação de **Inversão de Dependências (DI)** e **testes automatizados**. O aplicativo é composto por três telas principais:
+1. **Tela de Lista de Tarefas**: Exibe todas as tarefas criadas.
+2. **Tela de Criar Tarefa**: Permite criar novas tarefas.
+3. **Tela de Detalhes da Tarefa**: Exibe os detalhes de uma tarefa específica, com opções para editar ou excluir.
 
----
+O objetivo do projeto é demonstrar a aplicação de boas práticas de desenvolvimento, como separação de responsabilidades, organização modular e testes automatizados.
 
-## 🗂 Estrutura do Projeto
-
-O projeto segue boas práticas de separação de responsabilidades:
-```bash
-src/
-├── model/
-│ └── MyPhoto.ts
-│
-├── viewmodel/
-│ ├── UseIndexViewModel.ts
-│ └── GaleryViewModel.ts
-│
-├── app/
-│ ├── index.tsx (Tela da Câmera)
-│ ├── galery.tsx (Tela da Galeria)
-│ ├── photoDetail.tsx (Tela de Detalhes da Foto)
-│
-└── components/
-└── (componentes reutilizáveis)
-```
+## 🛠️ Tecnologias Utilizadas
+- **Expo**: Framework para desenvolvimento de aplicativos React Native.
+- **React Navigation**: Biblioteca para navegação entre telas.
+- **TypeScript**: Superset do JavaScript para tipagem estática.
+- **Jest**: Framework de testes para JavaScript.
+- **React Testing Library**: Biblioteca para testes de hooks e componentes React.
 
 ---
 
-## Arquitetura MVVM
+## 🏗️ Aplicação de MVVM, DI e Testes
 
-O projeto foi reorganizado para seguir a arquitetura MVVM, garantindo uma separação clara entre responsabilidades:
+### 🔹 Arquitetura MVVM
+O projeto foi estruturado seguindo o padrão **MVVM**, com separação clara entre as camadas:
+- **Model**: Contém as entidades, repositórios e lógica de negócio.
+- **ViewModel**: Gerencia o estado e as ações, servindo como ponte entre o Model e a View.
+- **View**: Responsável apenas pela interface visual e interação com o usuário.
 
-### **Model**
-- `MyPhoto.ts` define a estrutura das fotos: URI, latitude, longitude e timestamp.
+### 🔹 Inversão de Dependências (DI)
+A aplicação utiliza **Inversão de Dependências** para o serviço de tarefas. O repositório de tarefas é acessado por meio de uma interface (`ITaskRepository`), permitindo a substituição fácil por implementações diferentes (ex.: repositório em memória para testes).
 
-### **ViewModel**
-- `UseIndexViewModel.ts`
-  - Gerencia estado da câmera (frontal/traseira)
-  - Lida com permissões (câmera e localização)
-  - Captura fotos e salva localização
-- `GaleryViewModel.ts`
-  - Gerencia lista de fotos
-  - Funções para adicionar/excluir fotos
-  - Ordenação por data
-
-### **View**
-- `index.tsx`
-  - Exibição da câmera
-  - Botões de trocar câmera e tirar foto
-- `galery.tsx`
-  - Lista de fotos
-  - Localização (lat/long)
-  - Ordenação por data
-- `photoDetail.tsx`
-  - Foto grande
-  - Mapa com localização (react-native-maps)
-  - Informações adicionais
+### 🔹 Testes Automatizados
+Foram implementados testes automatizados para garantir a qualidade do código:
+- **Testes Unitários**: Cobrem a lógica de negócio nas ViewModels.
+- **Testes de CRUD**: Validam as operações de criação, leitura, atualização e exclusão de tarefas.
+- **Mocks**: Utilização de repositórios em memória para simular o comportamento do serviço de tarefas.
 
 ---
 
+## 🚀 Passo a Passo para Executar o App
 
-Os componentes visuais recebem tudo via props, sem regras de negócio. Estados locais são usados apenas para UI.
-
----
-
-## Interface com Gluestack UI
-
-A interface foi reescrita utilizando a biblioteca **react-native-gluestack**, substituindo os componentes nativos pelos equivalentes da biblioteca. Os principais componentes utilizados incluem:
-- **Box, Button, Text**
-- **VStack, HStack**
-- **Image**
-- **ScrollView/FlatListWrapper**
-
-A interface final é limpa, organizada, responsiva e fiel aos princípios de UI da biblioteca.
-
----
-
-## 📱 Funcionalidades Implementadas
-
-### **Tela da Câmera**
-- Visualização em tempo real
-- Trocar câmera frontal/traseira
-- Capturar fotos
-- Salvar foto com dados de localização
-
-### **Tela da Galeria**
-- Lista de fotos com miniaturas
-- Exibe latitude/longitude
-- Ordenação por data
-- Toque para ver detalhes
-
-### **Tela Extra — Detalhes**
-- Foto ampliada
-- Mapa com marcador (react-native-maps)
-- Data e coordenadas
-- Botão para voltar
-
----
-## Desafio Extra (Opcional)
-
-A terceira tela chamada **PhotoDetail** foi implementada com sucesso. Ela exibe:
-- A foto em tamanho grande.
-- Um mapa com marcador indicando a localização onde a foto foi tirada (se disponível).
-
-### Funcionalidades:
-- Exibição da foto capturada em tamanho grande.
-- Exibição de um mapa interativo com marcador, utilizando `react-native-maps`.
-- Informações adicionais, como data e coordenadas (latitude e longitude).
-- Botão para retornar à galeria.
-
-### Tecnologias utilizadas:
-- **React Native**
-- **Expo Router** para navegação.
-- **react-native-maps** para exibição do mapa.
-
-### Como testar:
-1. Navegue até a galeria.
-3. Clique na foto para ver os detalhes.
-4. Clique no botão "Detalhes" de uma foto.
-5. Verifique a exibição da foto, mapa e informações adicionais.
-6. Utilize o botão "Voltar" para retornar à galeria.
-
-
-
----
-
-## Como Executar o Projeto
-
-### **Pré-requisitos**
-- Node.js instalado.
-- Expo CLI configurado.
-
-### **Passos**
-1. Clone o repositório:
+1. **Clone o repositório**:
    ```bash
-   git clone https://github.com/igordev23/Atividade-camera-gluestack.git
-```
-2. Navegue até o diretório do projeto:
-   ```bash
-   cd nome-do-projeto
+   git clone <URL_DO_REPOSITORIO>
+   cd todoMVVM
    ```
-3. Instale as dependências:
+
+2. **Instale as dependências**:
    ```bash
    npm install
    ```
-4. Inicie o aplicativo:
+
+3. **Inicie o servidor de desenvolvimento**:
    ```bash
    npx expo start
    ```
+
+4. **Abra o aplicativo**:
+   - Escaneie o QR Code no terminal com o aplicativo **Expo Go** no seu dispositivo móvel.
+   - Ou pressione `a` para abrir no emulador Android ou `i` para abrir no emulador iOS.
+
+---
+
+## ✅ Passo a Passo para Executar os Testes
+
+1. **Certifique-se de que as dependências de teste estão instaladas**:
+   ```bash
+   npm install --save-dev jest @testing-library/react-hooks @testing-library/react-native
+   ```
+
+2. **Execute os testes**:
+   ```bash
+   npm test
+   ```
+
+3. **Resultados esperados**:
+   - Todos os testes devem passar, validando o funcionamento correto da lógica de negócio e das operações de CRUD.
+
+---
+
+## 📂 Estrutura de Pastas
+A estrutura do projeto foi organizada de forma a refletir a arquitetura MVVM:
+
+```bash
+src/
+├── app/                # Telas do aplicativo
+│   ├── createTaskScreen.tsx
+│   ├── detailTaskScreen.tsx
+│   ├── listTaskScreen.tsx
+│   └── _layout.tsx
+├── model/              # Camada de Model
+│   ├── entities/       # Entidades do domínio
+│   ├── repositories/   # Repositórios de dados
+│   └── services/       # Serviços auxiliares
+├── view/               # Componentes visuais
+│   └── components/
+├── viewmodel/          # Hooks da camada ViewModel
+├── __tests__/          # Testes automatizados
+│   ├── repository/     # Testes dos repositórios
+│   └── viewmodel/      # Testes das ViewModels
+└── utils/              # Funções utilitárias
+```
+
+---
+
+## 🏆 Critérios de Avaliação Atendidos
+- **Arquitetura MVVM**: Implementada com separação clara entre camadas.
+- **Inversão de Dependências**: Aplicada ao serviço de tarefas.
+- **Testes Automatizados**: Incluem testes unitários e de CRUD.
+- **Organização do Código**: Estrutura de pastas coerente e modular.
+- **Funcionalidades**: CRUD de tarefas e navegação entre telas implementados com sucesso.
+- **README.md**: Documentação clara e completa, com identificação dos integrantes e instruções detalhadas.
+
+---
+
+## 📧 Contato
+Em caso de dúvidas, entre em contato com os integrantes do grupo.
