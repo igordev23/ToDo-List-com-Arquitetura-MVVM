@@ -10,8 +10,8 @@ export type UseDetailTaskViewModelState = {
 
 export type UseDetailTaskViewModelActions = {
     loadTask: (index: number) => Promise<void>;
-    updateTask: (index: number, task: Task) => Promise<void>;
-    deleteTask: (index: number) => Promise<void>;
+    updateTask: (index: number, task: Task) => Promise<boolean>; // Retorna sucesso
+    deleteTask: (index: number) => Promise<boolean>; // Retorna sucesso
 };
 
 export const useDetailTaskViewModel = (
@@ -37,27 +37,31 @@ export const useDetailTaskViewModel = (
         }
     };
 
-    const updateTask = async (index: number, task: Task) => {
+    const updateTask = async (index: number, task: Task): Promise<boolean> => {
         setLoading(true);
         setError(null);
         try {
             await taskRepository.update(index, task);
             await loadTask(index);
+            return true; // Indica sucesso
         } catch (err) {
             setError(err instanceof Error ? err.message : "Erro ao atualizar a tarefa");
+            return false; // Indica falha
         } finally {
             setLoading(false);
         }
     };
 
-    const deleteTask = async (index: number) => {
+    const deleteTask = async (index: number): Promise<boolean> => {
         setLoading(true);
         setError(null);
         try {
             await taskRepository.delete(index);
             setTask(null); // Limpa a tarefa atual após a exclusão
+            return true; // Indica sucesso
         } catch (err) {
             setError(err instanceof Error ? err.message : "Erro ao deletar a tarefa");
+            return false; // Indica falha
         } finally {
             setLoading(false);
         }

@@ -1,4 +1,4 @@
-import { useRouter, useLocalSearchParams } from "expo-router"; // Corrigido para usar useLocalSearchParams
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { Box } from "@/components/ui/box";
 import { Text } from "@/components/ui/text";
 import { Pressable } from "@/components/ui/pressable";
@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 export default function DetailTaskScreen() {
   const router = useRouter();
-  const { index } = useLocalSearchParams(); // Obtém o índice da tarefa a partir dos parâmetros da URL
+  const { index } = useLocalSearchParams();
   const { state, actions } = useDetailTaskViewModel(null);
   const { task, loading, error } = state;
   const { loadTask, updateTask, deleteTask } = actions;
@@ -17,13 +17,15 @@ export default function DetailTaskScreen() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
+  // Estado para exibir mensagem dinâmica
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   useEffect(() => {
     if (index !== undefined) {
-      loadTask(Number(index)); // Carrega a tarefa com base no índice
+      loadTask(Number(index));
     }
   }, [index]);
 
-  // Atualiza os campos de entrada quando a tarefa é carregada
   useEffect(() => {
     if (task) {
       setTitle(task.titulo ?? "");
@@ -31,22 +33,31 @@ export default function DetailTaskScreen() {
     }
   }, [task]);
 
-  const handleUpdateTask = () => {
+  const handleUpdateTask = async () => {
     if (task && index !== undefined) {
-      // Atualiza a tarefa com os novos valores de título e descrição
       const updatedTask = {
         ...task,
         titulo: title,
         descricao: description,
       };
-      updateTask(Number(index), updatedTask);
+      const success = await updateTask(Number(index), updatedTask);
+      if (success) {
+        setSuccessMessage("Tarefa atualizada com sucesso!");
+        setTimeout(() => setSuccessMessage(null), 3000); // Remove a mensagem após 3 segundos
+      }
     }
   };
 
-  const handleDeleteTask = () => {
+  const handleDeleteTask = async () => {
     if (index !== undefined) {
-      deleteTask(Number(index)); // Deleta a tarefa
-      router.replace("./listTaskScreen"); // Redireciona para a lista de tarefas
+      const success = await deleteTask(Number(index));
+      if (success) {
+        setSuccessMessage("Tarefa deletada com sucesso!");
+        setTimeout(() => {
+          setSuccessMessage(null);
+          router.replace("./listTaskScreen");
+        }, 3000); // Redireciona após 3 segundos
+      }
     }
   };
 
@@ -56,6 +67,13 @@ export default function DetailTaskScreen() {
       <Box className="py-4 px-6 bg-primary-500">
         <Text className="text-white text-lg font-bold">Detalhes da Tarefa</Text>
       </Box>
+
+      {/* Mensagem dinâmica */}
+      {successMessage && (
+        <Box className="mt-4 p-4 bg-green-100 rounded-lg shadow">
+          <Text className="text-green-700 font-medium">{successMessage}</Text>
+        </Box>
+      )}
 
       {/* Conteúdo principal */}
       <Box className="mt-4 p-4 bg-gray-100 rounded-lg shadow">
@@ -94,10 +112,9 @@ export default function DetailTaskScreen() {
 
       {/* Botões de ação */}
       <Box className="mt-4 space-y-4">
-        {/* Botão para atualizar a tarefa */}
         <Pressable
           onPress={handleUpdateTask}
-          disabled={loading || !task} // Desabilita se estiver carregando ou sem tarefa
+          disabled={loading || !task}
           className={`px-6 py-3 rounded-xl shadow-lg ${
             loading || !task ? "bg-gray-400" : "bg-blue-500"
           }`}
@@ -107,10 +124,9 @@ export default function DetailTaskScreen() {
           </Text>
         </Pressable>
 
-        {/* Botão para deletar a tarefa */}
         <Pressable
           onPress={handleDeleteTask}
-          disabled={loading || !task} // Desabilita se estiver carregando ou sem tarefa
+          disabled={loading || !task}
           className={`px-6 py-3 rounded-xl shadow-lg ${
             loading || !task ? "bg-gray-400" : "bg-red-500"
           }`}
@@ -120,7 +136,6 @@ export default function DetailTaskScreen() {
           </Text>
         </Pressable>
 
-        {/* Botão para voltar */}
         <Pressable
           onPress={() => router.replace("./listTaskScreen")}
           className="px-6 py-3 bg-primary-500 rounded-xl shadow-lg"
