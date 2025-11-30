@@ -47,8 +47,7 @@ Foram implementados testes automatizados para garantir a qualidade do código:
 
 1. **Clone o repositório**:
    ```bash
-   git clone <URL_DO_REPOSITORIO>
-   cd todoMVVM
+   git clone https://github.com/igordev23/ToDo-List-com-Arquitetura-MVVM/tree/main
    ```
 
 2. **Instale as dependências**:
@@ -118,6 +117,3 @@ src/
 - **README.md**: Documentação clara e completa, com identificação dos integrantes e instruções detalhadas.
 
 ---
-
-## 📧 Contato
-Em caso de dúvidas, entre em contato com os integrantes do grupo.
