@@ -5,6 +5,7 @@ import { Pressable } from "@/components/ui/pressable";
 import { useListTaskViewModel } from "../viewmodel/useListTaskViewModel";
 import { useFocusEffect } from "@react-navigation/native";
 import { FlatList } from "react-native";
+import { Trash2 } from "lucide-react-native";
 
 export default function ListTaskScreen() {
   const router = useRouter();
@@ -17,39 +18,32 @@ export default function ListTaskScreen() {
     loadTasks();
   });
 
-  const renderTaskItem = ({ item: task, index }: { item: any; index: number }) => (
-    <Box
-      key={index}
-      className="mb-4 p-4 bg-gray-100 rounded-lg shadow flex-row justify-between items-center"
+   const renderTaskItem = ({ item: task, index }: { item: any; index: number }) => (
+    <Pressable
+      onPress={() => router.replace(`./detailTaskScreen?index=${index}`)}
+      className="mb-4 p-4 bg-white rounded-2xl shadow-md border border-gray-200 active:opacity-90 flex-row justify-between items-center"
     >
       {/* Informações da tarefa */}
-      <Box className="flex-1">
-        <Text className="text-black font-medium">{task.titulo}</Text>
-        <Text className="text-gray-600 text-sm">{task.decricao}</Text>
-        <Text className="text-gray-600 text-sm">
-          TimeStamp: {new Date(task.timeStamp ?? 0).toLocaleString()}
+      <Box className="flex-1 pr-3">
+        <Text className="text-black font-bold text-lg">{task.titulo}</Text>
+
+        <Text className="text-gray-600 text-sm mt-1">
+          {task.decricao}
+        </Text>
+
+        <Text className="text-gray-400 text-xs mt-1">
+          {new Date(task.timeStamp ?? 0).toLocaleString()}
         </Text>
       </Box>
 
-      {/* Botões de ação */}
-      <Box className="flex-row items-center space-x-2">
-        {/* Botão para detalhes */}
-        <Pressable
-          onPress={() => router.push(`./detailTaskScreen?index=${index}`)}
-          className="px-4 py-2 bg-blue-500 rounded-lg"
-        >
-          <Text className="text-white font-bold">Detalhes</Text>
-        </Pressable>
-
-        {/* Botão para deletar */}
-        <Pressable
-          onPress={() => deleteTask(index)}
-          className="px-4 py-2 bg-red-500 rounded-lg"
-        >
-          <Text className="text-white font-bold">Deletar</Text>
-        </Pressable>
-      </Box>
-    </Box>
+      {/* Botão de Deletar */}
+      <Pressable
+        onPress={() => deleteTask(index)}
+        className="p-2 bg-red-500 rounded-full active:opacity-80"
+      >
+        <Trash2 size={20} color="white" />
+      </Pressable>
+    </Pressable>
   );
 
   return (
