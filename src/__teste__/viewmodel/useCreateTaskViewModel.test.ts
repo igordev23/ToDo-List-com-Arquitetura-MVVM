@@ -33,6 +33,7 @@ describe("useCreateTaskViewModel", () => {
       descricao: "Descrição da nova tarefa",
       timeStamp: Date.now(),
     };
+    
 
     // Mock para simular que após criar, a lista de tarefas está vazia
     (taskRepository.getAll as jest.Mock).mockResolvedValue([]);
