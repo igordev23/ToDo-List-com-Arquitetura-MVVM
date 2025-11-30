@@ -37,7 +37,7 @@ export default function DetailTaskScreen() {
       const updatedTask = {
         ...task,
         titulo: title,
-        decricao: description,
+        descricao: description,
       };
       updateTask(Number(index), updatedTask);
     }
@@ -86,7 +86,9 @@ export default function DetailTaskScreen() {
             </Text>
           </>
         ) : (
-          <Text className="text-center text-gray-500">Nenhuma tarefa encontrada.</Text>
+          <Text className="text-center text-gray-500">
+            Nenhuma tarefa encontrada.
+          </Text>
         )}
       </Box>
 
