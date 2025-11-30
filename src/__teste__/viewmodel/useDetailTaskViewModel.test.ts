@@ -9,7 +9,7 @@ describe("useDetailTaskViewModel", () => {
   const mockTask: Task = {
     id: "1",
     titulo: "Tarefa Teste",
-    decricao: "Descrição Teste",
+    descricao: "Descrição Teste",
     timeStamp: 1640995200000,
   };
 
@@ -18,7 +18,7 @@ describe("useDetailTaskViewModel", () => {
     {
       id: "2",
       titulo: "Outra Tarefa",
-      decricao: "Outra Descrição",
+      descricao: "Outra Descrição",
       timeStamp: 1640995300000,
     },
   ];
@@ -73,7 +73,7 @@ describe("useDetailTaskViewModel", () => {
     const updatedTask: Task = {
       ...mockTask,
       titulo: "Título Atualizado",
-      decricao: "Descrição Atualizada",
+      descricao: "Descrição Atualizada",
     };
 
     (taskRepository.getAll as jest.Mock).mockResolvedValue(mockTasks);
