@@ -44,14 +44,18 @@ export default function CreateTaskScreen() {
   };
 
   return (
-    <Box className="flex-1 bg-white p-4">
+    <Box className="flex-1 bg-gray-100">
+      
       {/* Header */}
-      <Box className="py-4 px-6 bg-primary-500">
-        <Text className="text-white text-lg font-bold">Criar Nova Tarefa</Text>
+      <Box className="py-5 px-6 bg-gray-600 shadow-md rounded-b-3xl">
+        <Text className="text-center text-white text-xl font-extrabold">
+          Criar Nova Tarefa
+        </Text>
       </Box>
 
+      {/* Feedback Cards */}
       {error ? (
-        <Box className="mt-4">
+        <Box className="mt-4 px-4">
           <FeedbackCard
             type="error"
             title="Erro"
@@ -62,7 +66,7 @@ export default function CreateTaskScreen() {
       ) : null}
 
       {successMessage ? (
-        <Box className="mt-4">
+        <Box className="mt-4 px-4">
           <FeedbackCard
             type="success"
             title="Sucesso"
@@ -72,39 +76,46 @@ export default function CreateTaskScreen() {
         </Box>
       ) : null}
 
-      {/* Form */}
-      <Box className="mt-4">
-        <Text className="text-black font-medium mb-2">Título</Text>
-        <TextInput
-          value={title}
-          onChangeText={setTitle}
-          placeholder="Digite o título da tarefa"
-          className="p-4 bg-gray-100 rounded-lg shadow"
-        />
+      {/* Form Container */}
+      <Box className="mt-6 px-5">
+        <Box className="bg-white p-5 rounded-2xl shadow-md">
+          
+          <Text className="text-black font-semibold mb-2">Título</Text>
+          <TextInput
+            value={title}
+            onChangeText={setTitle}
+            placeholder="Digite o título da tarefa"
+            className="p-4 bg-gray-100 rounded-xl border border-gray-200"
+          />
 
-        <Text className="text-black font-medium mt-4 mb-2">Descrição</Text>
-        <TextInput
-          value={description}
-          onChangeText={setDescription}
-          placeholder="Digite a descrição da tarefa"
-          className="p-4 bg-gray-100 rounded-lg shadow"
-        />
+          <Text className="text-black font-semibold mt-4 mb-2">Descrição</Text>
+          <TextInput
+            value={description}
+            onChangeText={setDescription}
+            placeholder="Digite a descrição da tarefa"
+            className="p-4 bg-gray-100 rounded-xl border border-gray-200"
+            multiline
+          />
 
-        {error && <Text className="text-red-500 mt-2">{error}</Text>}
+          {error && (
+            <Text className="text-red-500 mt-2">{error}</Text>
+          )}
+
+        </Box>
+
+        {/* Save Button */}
+        <Pressable
+          onPress={handleSaveTask}
+          disabled={loading}
+          className={`mt-6 p-4 rounded-2xl shadow-xl ${
+            loading ? "bg-gray-400" : "bg-blue-600"
+          }`}
+        >
+          <Text className="text-center text-white text-lg font-bold">
+            {loading ? "Salvando..." : "Salvar Tarefa"}
+          </Text>
+        </Pressable>
       </Box>
-
-      {/* Save button */}
-      <Pressable
-        onPress={handleSaveTask}
-        disabled={loading}
-        className={`mt-4 px-6 py-3 rounded-xl shadow-lg ${
-          loading ? "bg-gray-400" : "bg-primary-500"
-        }`}
-      >
-        <Text className="text-white font-bold">
-          {loading ? "Salvando..." : "Salvar Tarefa"}
-        </Text>
-      </Pressable>
     </Box>
   );
 }
