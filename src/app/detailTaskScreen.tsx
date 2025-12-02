@@ -6,8 +6,10 @@ import { TextInput } from "react-native";
 import { useDetailTaskViewModel } from "../viewmodel/useDetailTaskViewModel";
 import { useEffect, useState } from "react";
 import { FeedbackCard } from "../view/components/FeedbackCard";
+import { ConfirmDeleteModal } from "../view/components/alertMessenger";
 
-
+// ICONS
+import { Pencil, Trash2 } from "lucide-react-native";
 
 export default function DetailTaskScreen() {
   const router = useRouter();
@@ -17,19 +19,20 @@ export default function DetailTaskScreen() {
   const { task, loading, error } = state;
   const { loadTask, updateTask, deleteTask } = actions;
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [taskIndexToDelete, setTaskIndexToDelete] = useState<number | null>(null);
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  // Mensagem dinâmica
+  // FEEDBACK
   const [feedback, setFeedback] = useState<{
     type: "success" | "error" | "info" | "warning";
     message: string;
   } | null>(null);
 
   useEffect(() => {
-    if (index !== undefined) {
-      loadTask(Number(index));
-    }
+    if (index !== undefined) loadTask(Number(index));
   }, [index]);
 
   useEffect(() => {
@@ -41,7 +44,12 @@ export default function DetailTaskScreen() {
 
   const showFeedback = (type: any, message: string) => {
     setFeedback({ type, message });
-    setTimeout(() => setFeedback(null), 3500);
+    setTimeout(() => setFeedback(null), 2500);
+  };
+
+  const askDelete = (index: number) => {
+    setTaskIndexToDelete(index);
+    setModalVisible(true);
   };
 
   const handleUpdateTask = async () => {
@@ -51,37 +59,41 @@ export default function DetailTaskScreen() {
         titulo: title,
         descricao: description,
       };
+
       const success = await updateTask(Number(index), updatedTask);
-      if (success) {
-        showFeedback("success", "Tarefa atualizada com sucesso!");
-      } else {
-        showFeedback("error", "Erro ao atualizar tarefa.");
-      }
+
+      showFeedback(
+        success ? "success" : "error",
+        success ? "Tarefa atualizada com sucesso!" : "Erro ao atualizar tarefa."
+      );
     }
   };
 
   const handleDeleteTask = async () => {
     if (index !== undefined) {
       const success = await deleteTask(Number(index));
-      if (success) {
-        showFeedback("success", "Tarefa deletada com sucesso!");
-        setTimeout(() => router.replace("./listTaskScreen"), 3500);
-      } else {
-        showFeedback("error", "Erro ao deletar tarefa.");
-      }
+
+      showFeedback(
+        success ? "success" : "error",
+        success ? "Tarefa deletada com sucesso!" : "Erro ao deletar tarefa."
+      );
+
+      if (success) setTimeout(() => router.replace("./listTaskScreen"), 2500);
     }
   };
 
   return (
-    <Box className="flex-1 bg-white p-4">
-      {/* Header */}
-      <Box className="py-4 px-6 bg-primary-500">
-        <Text className="text-white text-lg font-bold">Detalhes da Tarefa</Text>
+    <Box className="flex-1 bg-gray-50 p-0">
+      {/* HEADER */}
+      <Box className="py-5 px-6 bg-gray-600 shadow-md rounded-b-3xl">
+        <Text className="text-center text-white text-xl font-bold tracking-wide">
+          Detalhes da Tarefa
+        </Text>
       </Box>
 
       {/* FEEDBACK CARD */}
       {feedback && (
-        <Box className="mt-4">
+        <Box className="mt-4 px-4">
           <FeedbackCard
             type={feedback.type}
             message={feedback.message}
@@ -90,32 +102,39 @@ export default function DetailTaskScreen() {
         </Box>
       )}
 
-      {/* Conteúdo principal */}
-      <Box className="mt-4 p-4 bg-gray-100 rounded-lg shadow">
+      {/* CARD */}
+      <Box className="mt-6 mx-4 p-5 bg-white rounded-2xl shadow-lg border border-gray-200">
         {loading ? (
           <Text className="text-center text-gray-500">Carregando...</Text>
         ) : error ? (
           <FeedbackCard type="error" message={error} />
         ) : task ? (
           <>
-            <Text className="text-black font-medium mb-2">Título</Text>
+            {/* TÍTULO */}
+            <Text className="text-lg font-semibold text-gray-800 mb-1">
+              Título
+            </Text>
             <TextInput
               value={title}
               onChangeText={setTitle}
               placeholder="Digite o título da tarefa"
-              className="p-4 bg-gray-100 rounded-lg shadow mb-4"
+              className="p-4 bg-gray-100 rounded-xl border border-gray-300 mb-5"
             />
 
-            <Text className="text-black font-medium mb-2">Descrição</Text>
+            {/* DESCRIÇÃO */}
+            <Text className="text-lg font-semibold text-gray-800 mb-1">
+              Descrição
+            </Text>
             <TextInput
               value={description}
               onChangeText={setDescription}
               placeholder="Digite a descrição da tarefa"
-              className="p-4 bg-gray-100 rounded-lg shadow"
+              className="p-4 bg-gray-100 rounded-xl border border-gray-300"
             />
 
-            <Text className="text-gray-600 text-sm mt-4">
-              TimeStamp: {new Date(task.timeStamp ?? 0).toLocaleString()}
+            {/* TIMESTAMP */}
+            <Text className="text-gray-500 text-sm mt-4 italic text-right">
+              Criada em: {new Date(task.timeStamp ?? 0).toLocaleString()}
             </Text>
           </>
         ) : (
@@ -123,39 +142,42 @@ export default function DetailTaskScreen() {
         )}
       </Box>
 
-      {/* Botões */}
-      <Box className="mt-4 space-y-4">
-        <Pressable
-          onPress={handleUpdateTask}
-          disabled={loading || !task}
-          className={`px-6 py-3 rounded-xl shadow-lg ${
-            loading || !task ? "bg-gray-400" : "bg-blue-500"
-          }`}
-        >
-          <Text className="text-white font-bold">
-            {loading ? "Atualizando..." : "Atualizar Tarefa"}
+      {/* BOTÕES COM ÍCONES */}
+      <Box className="mt-8 flex-row justify-around items-center px-6">
+        {/* EDITAR */}
+        <Pressable onPress={handleUpdateTask} disabled={loading || !task} className="items-center">
+          <Pencil size={32} color={loading ? "#9CA3AF" : "#2563EB"} />
+          <Text className={`mt-1 font-medium ${loading ? "text-gray-400" : "text-blue-600"}`}>
+            Editar
           </Text>
         </Pressable>
 
-        <Pressable
-          onPress={handleDeleteTask}
-          disabled={loading || !task}
-          className={`px-6 py-3 rounded-xl shadow-lg ${
-            loading || !task ? "bg-gray-400" : "bg-red-500"
-          }`}
-        >
-          <Text className="text-white font-bold">
-            {loading ? "Deletando..." : "Deletar Tarefa"}
+        {/* DELETAR */}
+        <Pressable onPress={() => askDelete(Number(index))} disabled={loading || !task} className="items-center">
+          <Trash2 size={32} color={loading ? "#9CA3AF" : "#DC2626"} />
+          <Text className={`mt-1 font-medium ${loading ? "text-gray-400" : "text-red-600"}`}>
+            Deletar
           </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={() => router.replace("./listTaskScreen")}
-          className="px-6 py-3 bg-primary-500 rounded-xl shadow-lg"
-        >
-          <Text className="text-white font-bold">Voltar para Lista</Text>
         </Pressable>
       </Box>
+
+      {/* BOTÃO VOLTAR */}
+      <Pressable
+        onPress={() => router.replace("./listTaskScreen")}
+        className="mx-6 mt-10 py-4 bg-gray-400 rounded-xl shadow-lg"
+      >
+        <Text className="text-white font-bold text-center">Voltar para Lista</Text>
+      </Pressable>
+
+      {/* MODAL DELETAR */}
+      <ConfirmDeleteModal
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        onConfirm={() => {
+          setModalVisible(false);
+          handleDeleteTask();
+        }}
+      />
     </Box>
   );
 }

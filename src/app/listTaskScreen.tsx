@@ -6,40 +6,42 @@ import { Pressable } from "@/components/ui/pressable";
 import { useListTaskViewModel } from "../viewmodel/useListTaskViewModel";
 import { useFocusEffect } from "@react-navigation/native";
 import { FlatList } from "react-native";
-import { Trash2 } from "lucide-react-native";
+import { Component, Trash2 } from "lucide-react-native";
 import { truncate } from "../utils/textUtils";
 import { FeedbackCard } from "../view/components/FeedbackCard";
+import {ConfirmDeleteModal} from "../view/components/alertMessenger"
+
 
 export default function ListTaskScreen() {
   const router = useRouter();
   const { state, actions } = useListTaskViewModel();
   const { tasks, loading, error } = state;
   const { loadTasks, deleteTask } = actions;
-
+    const [modalVisible, setModalVisible] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [taskIndexToDelete, setTaskIndexToDelete] = useState<number | null>(null);
 
   useFocusEffect(() => {
     loadTasks();
   });
 
-  // Se acontecer um erro, mostrar feedback
-  useEffect(() => {
-    if (error) {
-      setSuccessMessage(null); // apaga mensagem de sucesso
+  // Abrir modal
+  const askDelete = (index: number) => {
+    setTaskIndexToDelete(index);
+    setModalVisible(true);
+  };
+  // Confirmar exclusão
+  const confirmDelete = async () => {
+    if (taskIndexToDelete !== null) {
+      await deleteTask(taskIndexToDelete);
+
+      if (!state.error) {
+        setSuccessMessage("Tarefa deletada com sucesso!");
+        setTimeout(() => setSuccessMessage(null), 2500);
+      }
     }
-  }, [error]);
-
-  const handleDelete = async (index: number) => {
-    await deleteTask(index);
-
-    // Se após o delete NÃO houver erro → sucesso
-    if (!state.error) {
-      setSuccessMessage("Tarefa excluída com sucesso!");
-
-      setTimeout(() => {
-        setSuccessMessage(null);
-      }, 2500);
-    }
+    setModalVisible(false);
+    setTaskIndexToDelete(null);
   };
 
   const renderTaskItem = ({ item: task, index }: { item: any; index: number }) => (
@@ -62,7 +64,7 @@ export default function ListTaskScreen() {
       </Box>
 
       <Pressable
-        onPress={() => handleDelete(index)}
+        onPress={() => askDelete(index)}
         className="p-2 bg-red-500 rounded-full active:opacity-80"
       >
         <Trash2 size={20} color="white" />
@@ -72,8 +74,8 @@ export default function ListTaskScreen() {
 
   return (
     <Box className="flex-1 bg-white">
-      <Box className="py-4 px-6 bg-primary-500">
-        <Text className="text-white text-lg font-bold">Lista de Tarefas</Text>
+      <Box className="py-5 px-6 bg-gray-600 shadow-md rounded-b-3xl">
+        <Text className="text-center text-white text-lg font-bold">Lista de Tarefas</Text>
       </Box>
 
       <Box className="flex-1 p-4">
@@ -113,11 +115,17 @@ export default function ListTaskScreen() {
 
         <Pressable
           onPress={() => router.push("./createTaskScreen")}
-          className="mt-4 px-6 mb-6 py-3 bg-primary-500 rounded-xl shadow-lg"
+          className="mt-4 px-6 mb-6 py-3 bg-blue-500 rounded-xl shadow-lg"
         >
-          <Text className="text-white font-bold">Adicionar Nova Tarefa</Text>
+          <Text className="text-center text-white font-bold">Adicionar Nova Tarefa</Text>
         </Pressable>
       </Box>
+      {/* 🔥 MODAL DE CONFIRMAÇÃO */}
+      <ConfirmDeleteModal
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        onConfirm={confirmDelete}
+      />
     </Box>
   );
 }
