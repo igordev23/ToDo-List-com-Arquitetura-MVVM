@@ -9,7 +9,7 @@ import { FeedbackCard } from "../view/components/FeedbackCard";
 import { ConfirmDeleteModal } from "../view/components/alertMessenger";
 
 // ICONS
-import { Pencil, Trash2 } from "lucide-react-native";
+import { Save, Trash2 } from "lucide-react-native";
 
 export default function DetailTaskScreen() {
   const router = useRouter();
@@ -146,9 +146,9 @@ export default function DetailTaskScreen() {
       <Box className="mt-8 flex-row justify-around items-center px-6">
         {/* EDITAR */}
         <Pressable onPress={handleUpdateTask} disabled={loading || !task} className="items-center">
-          <Pencil size={32} color={loading ? "#9CA3AF" : "#2563EB"} />
+          <Save size={32} color={loading ? "#9CA3AF" : "#2563EB"} />
           <Text className={`mt-1 font-medium ${loading ? "text-gray-400" : "text-blue-600"}`}>
-            Editar
+            Salvar
           </Text>
         </Pressable>
 
