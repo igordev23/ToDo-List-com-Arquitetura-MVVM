@@ -4,7 +4,7 @@
 - **Francisco Igor Silva Santos** - 2024116TADS0030 
 - **Sávyo Francisco Barbosa Nascimento** - 20204116TADS0003  
 - **Mardone Silva Pereira** - 2024116TADS0034
-- **Nome Completo 4** - Matrícula 4
+- **Ikaro Herbert Vasconcelos Gomes** - 2024116TADS0032
 - **Nome Completo 5** - Matrícula 5   
 
 ## 📝 Descrição do Projeto
