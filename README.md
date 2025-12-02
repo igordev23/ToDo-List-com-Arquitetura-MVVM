@@ -5,7 +5,7 @@
 - **Sávyo Francisco Barbosa Nascimento** - 20204116TADS0003  
 - **Mardone Silva Pereira** - 2024116TADS0034
 - **Ikaro Herbert Vasconcelos Gomes** - 2024116TADS0032
-- **Nome Completo 5** - Matrícula 5   
+- **Carlos André Sampaio do Nascimento** - 2024116TADS0026  
 
 ## 📝 Descrição do Projeto
 Este projeto é uma aplicação de lista de tarefas (ToDo List) desenvolvida utilizando a arquitetura **MVVM (Model-View-ViewModel)**, com aplicação de **Inversão de Dependências (DI)** e **testes automatizados**. O aplicativo é composto por três telas principais:
