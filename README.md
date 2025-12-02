@@ -21,6 +21,8 @@ O objetivo do projeto é demonstrar a aplicação de boas práticas de desenvolv
 - **TypeScript**: Superset do JavaScript para tipagem estática.
 - **Jest**: Framework de testes para JavaScript.
 - **React Testing Library**: Biblioteca para testes de hooks e componentes React.
+- **TailwindCSS**: Framework para estilização com classes utilitárias.
+- **Gluestack UI**: Biblioteca de componentes visuais integrada ao TailwindCSS.
 
 ---
 
